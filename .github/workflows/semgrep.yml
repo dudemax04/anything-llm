@@ -10,6 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: returntocorp/semgrep-action@v1
+
+      # Install Python and Semgrep 1.76.0 explicitly
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          config: "p/ci"
+          python-version: '3.11'
+
+      - name: Install Semgrep
+        run: pip install --upgrade semgrep==1.76.0
+
+      # Run Semgrep with both CI and Security configs
+      - name: Run Semgrep CI rules
+        run: semgrep --config p/ci
+
+      - name: Run Semgrep Security rules
+        run: semgrep --config p/security-audit
